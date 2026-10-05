@@ -28,3 +28,12 @@ jobs:
           cmake --build build --parallel 2
       - name: CLI smoke check
         run: ./build/dooked --help
+      - name: C++ history and JSON integration tests
+        run: |
+          g++ -std=c++17 -Wall -Wextra -I dooked/include -I dooked/json/single_include \
+            dooked/tests/history_test.cpp dooked/source/utils/io_utils.cpp \
+            dooked/source/utils/constants.cpp dooked/source/utils/string_utils.cpp \
+            -o build/history-tests
+          ./build/history-tests
+      - name: Real CLI regression against loopback DNS
+        run: python3 dooked/tests/cli_history_test.py build/dooked
